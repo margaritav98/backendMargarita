@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="GestorTareasModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Roles">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Usuarios" Relationship="Self.FK_Usuarios_Roles" FromRole="Roles" ToRole="Usuarios" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Tareas">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="fechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="descripcion" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="estado" Type="Boolean" Nullable="false" />
+    <Property Name="fechaVencimiento" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="idUsuario" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Usuarios" Relationship="Self.FK_Tareas_Usuarios" FromRole="Tareas" ToRole="Usuarios" />
+  </EntityType>
+  <EntityType Name="Usuarios">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="estado" Type="Boolean" Nullable="false" />
+    <Property Name="token" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="idRol" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Roles" Relationship="Self.FK_Usuarios_Roles" FromRole="Usuarios" ToRole="Roles" />
+    <NavigationProperty Name="Tareas" Relationship="Self.FK_Tareas_Usuarios" FromRole="Usuarios" ToRole="Tareas" />
+  </EntityType>
+  <Association Name="FK_Usuarios_Roles">
+    <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Usuarios">
+        <PropertyRef Name="idRol" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Tareas_Usuarios">
+    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
+    <End Role="Tareas" Type="Self.Tareas" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Tareas">
+        <PropertyRef Name="idUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="GestorTareasEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Roles" EntityType="Self.Roles" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="Tareas" EntityType="Self.Tareas" />
+    <EntitySet Name="Usuarios" EntityType="Self.Usuarios" />
+    <AssociationSet Name="FK_Usuarios_Roles" Association="Self.FK_Usuarios_Roles">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="Usuarios" EntitySet="Usuarios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Tareas_Usuarios" Association="Self.FK_Tareas_Usuarios">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="Tareas" EntitySet="Tareas" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="GestorTareasModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Roles">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="Tareas">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fechaCreacion" Type="date" Nullable="false" />
+    <Property Name="descripcion" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="estado" Type="bit" Nullable="false" />
+    <Property Name="fechaVencimiento" Type="date" Nullable="false" />
+    <Property Name="idUsuario" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Usuarios">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="email" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="password" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="estado" Type="bit" Nullable="false" />
+    <Property Name="token" Type="varchar" MaxLength="100" />
+    <Property Name="idRol" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Tareas_Usuarios">
+    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
+    <End Role="Tareas" Type="Self.Tareas" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Tareas">
+        <PropertyRef Name="idUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Usuarios_Roles">
+    <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Usuarios">
+        <PropertyRef Name="idRol" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="GestorTareasModelStoreContainer">
+    <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tareas" EntityType="Self.Tareas" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Tareas_Usuarios" Association="Self.FK_Tareas_Usuarios">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="Tareas" EntitySet="Tareas" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Usuarios_Roles" Association="Self.FK_Usuarios_Roles">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="Usuarios" EntitySet="Usuarios" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
